@@ -16,17 +16,33 @@ services:
       - traefik
     hostname: traefik
     container_name: traefik
-  mailcatcher:
-    image: tophfr/mailcatcher
+  mailpit:
+    # mailcatcher and mailhog are no more maintained
+    networks:
+      - traefik
+    image: axllent/mailpit
+    container_name: mailpit
     restart: always
+    volumes:
+      - ./maildata:/data
+    ports:
+      - 8025:8025
+      - 1025:1025
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
-      - "traefik.http.routers.mailcatcher.rule=Host(`mailcatcher.localhost`)"
-      - "traefik.http.routers.mailcatcher.service=mailcatcher"
-      - "traefik.http.services.mailcatcher.loadbalancer.server.port=80"
-    networks:
-      - traefik
+      # in your server_environnment_files module
+      # you have to set in your `dev` env for every project
+      # `mail.localhost` as host
+      # `1025` as port
+      - "traefik.http.routers.mailpit.rule=Host(`mail.localhost`)"
+      - "traefik.http.middlewares.mailpitheaders.headers.customrequestheaders.X-Forwarded-Proto=http"
+      - "traefik.http.services.mailpit.loadbalancer.server.port=8025"
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_DATABASE: /data/mailpit.db
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
   kwkhtmltopdf:
     restart: always
     image: ghcr.io/acsone/kwkhtmltopdf:0.12.5-latest
