@@ -24,10 +24,7 @@ services:
     container_name: mailpit
     restart: always
     volumes:
-      - ./maildata:/data
-    ports:
-      - 8025:8025
-      - 1025:1025
+      - maildata:/data
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
@@ -51,3 +48,5 @@ services:
 networks:
   traefik:
     name: traefik
+volumes:
+  maildata:
