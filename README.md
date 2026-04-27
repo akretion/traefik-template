@@ -1,6 +1,6 @@
 # traefik-template
 
-Traefik template example for docker-compose to be used with docky / ak / odoo
+Traefik template example for docker-compose to be used with docky / ak / odoo.
 
 How to use it:
 
@@ -10,17 +10,28 @@ cd traefik
 docker-compose up -d
 ```
 
-Make sure port 80, 8080 and 443 are available.
+Make sure ports 80, 8080 and 443 are available.
 
-Dashboard is available on http://localhost:8080
+Traefik dashboard is available at http://localhost:8080
 
+---
 
-Now this version include also
+This version also includes:
 
-- mailpit: available on http://localhost:8025
-in your server_environnment_files module
-you have to set in your `dev` env for every project
-`mailpit` as host and `1025` as port
+- **kwkhtmltopdf**: a shared `wkhtmltopdf` service for all local instances.
+- **mailpit**: a shared mail catcher available at http://mail.localhost.
 
+The Mailpit SMTP server listens on port 1025.
 
-- kwkhtmltopdf
+To use Mailpit with your local Odoo (ENV=dev), you can create a `server_environment_files` module with the following minimal configuration in `server_environment_files/dev/base.conf`:
+
+```ini
+[outgoing_mail]
+smtp_host = mailpit
+smtp_port = 1025
+smtp_encryption = none
+```
+
+More info at:
+- https://github.com/OCA/server-env/tree/18.0/server_environment
+- https://github.com/OCA/server-env/tree/18.0/mail_environment

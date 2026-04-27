@@ -28,10 +28,6 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik"
-      # in your server_environnment_files module
-      # you have to set in your `dev` env for every project
-      # `mailpit` as host
-      # `1025` as port
       - "traefik.http.routers.mailpit.service=mailpit"
       - "traefik.http.routers.mailpit.rule=Host(`mail.localhost`)"
       - "traefik.http.services.mailpit.loadbalancer.server.port=8025"
